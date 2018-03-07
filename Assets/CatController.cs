@@ -5,10 +5,11 @@ using UnityEngine;
 enum State { Grounded, Jumping, Falling };
 
 public class CatController : MonoBehaviour {
-	[SerializeField] private float moveSpeed = 10.0f;
+	[SerializeField] private float moveAccel = 10.0f;
 	[SerializeField] private float jumpHeight = 10.0f;
 	[SerializeField] private float maxSpeed = 10.0f;
 	[SerializeField] private float friction = 0.8f;
+	[SerializeField] private float gravity = 25.0f;
 
 	[SerializeField] private int jumpTime = 5;	// number of fixed updates a jump lasts for
 
@@ -32,6 +33,8 @@ public class CatController : MonoBehaviour {
 
 	void FixedUpdate() {
 		grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundMask.value);
+
+		rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
 
 		switch (st) {
 		case State.Grounded:
@@ -59,15 +62,17 @@ public class CatController : MonoBehaviour {
 		case State.Grounded:
 			{
 				float moveDir = Input.GetAxis("Horizontal");
-				Vector2 moveVec = new Vector2(moveSpeed * moveDir, 0.0f);
+				Vector2 moveVec = new Vector2(moveAccel * moveDir, 0.0f);
 
-				if (moveVec.x == 0.0f)
-					moveVec += new Vector2(rb.velocity.x * -friction, 0.0f);
+				if (moveVec.x == 0.0f && Mathf.Abs(rb.velocity.x) > (friction * Time.deltaTime))
+					moveVec.x -= Mathf.Sign (rb.velocity.x) * (friction * Time.deltaTime);
+				else if (moveVec.x == 0.0f)
+					moveVec.x -= rb.velocity.x;
 
 				if (Input.GetButton ("Jump") && !hasJumped) {
 					st = State.Jumping;
 					jumpTimer = jumpTime;
-					moveVec += new Vector2(0.0f, jumpHeight);
+					moveVec += new Vector2(0.0f, jumpHeight * Time.deltaTime);
 					hasJumped = true;
 				}
 
@@ -84,8 +89,5 @@ public class CatController : MonoBehaviour {
 		case State.Falling:
 			break;
 		}
-
-		Debug.Log (st);
-		Debug.Log (grounded);
 	}
 }
