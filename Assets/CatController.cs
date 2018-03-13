@@ -151,16 +151,15 @@ public class CatController : MonoBehaviour {
 			break;
 		case State.Wall:
 			{
-				Debug.Log ("WALL!!!");
 				float moveDir = Input.GetAxis("Horizontal");
-				/*Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * airControlMult, 0.0f);
+				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * airControlMult, 0.0f);
 
 				if (moveVec.x == 0.0f && Mathf.Abs(rb.velocity.x) > (friction * Time.deltaTime * airControlMult))
 					moveVec.x -= Mathf.Sign (rb.velocity.x) * (friction * Time.deltaTime * airControlMult);
 				else if (moveVec.x == 0.0f)
 					moveVec.x -= rb.velocity.x;
 
-				rb.velocity += moveVec;*/
+				rb.velocity += moveVec;
 
 				Vector2 clampedVel = rb.velocity;
 				clampedVel.x = Mathf.Clamp (rb.velocity.x, -maxSpeed, maxSpeed);
