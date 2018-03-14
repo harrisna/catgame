@@ -35,8 +35,11 @@ public class CatController : MonoBehaviour {
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
 
+    [SerializeField]
     bool isAttacking = false;
+    [SerializeField]
     bool hasAttacked = false;
+    [SerializeField]
     int attackTimer = 0;
 
 	State st = State.Falling;
@@ -94,13 +97,19 @@ public class CatController : MonoBehaviour {
 			break;
 		}
 
+        if (!isAttacking && hasAttacked && !Input.GetButton("Fire1"))
+            hasAttacked = false;
+
         if (Input.GetButton("Fire1") && !hasAttacked && !isAttacking) {
             attackHitbox.enabled = true;
             attackTimer = attackTime;
+            hasAttacked = true;
+            isAttacking = true;
+        } else if (isAttacking && attackTimer > 0) {
+            attackTimer--;
         } else if (isAttacking) {
-            attackTimer++;
-        } else if (attackTimer <= 0) {
             attackHitbox.enabled = false;
+            isAttacking = false;
         }
 	}
 	
