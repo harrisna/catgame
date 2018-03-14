@@ -35,11 +35,8 @@ public class CatController : MonoBehaviour {
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
 
-    [SerializeField]
     bool isAttacking = false;
-    [SerializeField]
     bool hasAttacked = false;
-    [SerializeField]
     int attackTimer = 0;
 
 	State st = State.Falling;
@@ -62,23 +59,53 @@ public class CatController : MonoBehaviour {
 
 		grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundMask.value);
 		float moveDir = Input.GetAxis("Horizontal");
-        wall = Physics2D.OverlapCircle(wallCheckRight.position, groundRadius, groundMask.value) ||
-            Physics2D.OverlapCircle(wallCheckLeft.position, groundRadius, groundMask.value);
+		if (moveDir > 0)
+			wall = Physics2D.OverlapCircle (wallCheckRight.position, groundRadius, groundMask.value);
+		else if (moveDir < 0)
+			wall = Physics2D.OverlapCircle (wallCheckLeft.position, groundRadius, groundMask.value);
+		else
+			wall = false;
 
 
 		switch (st) {
 		case State.Grounded:
-			if (!grounded)
-				st = State.Falling;
-			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
+			{
+				if (!grounded)
+					st = State.Falling;
+
+				Vector2 moveVec = new Vector2 (0.0f, 0.0f);
+
+				if (Input.GetButton ("Jump") && !hasJumped) {
+					st = State.Jumping;
+					jumpTimer = jumpTime;
+					moveVec += new Vector2 (0.0f, jumpPower * Time.fixedDeltaTime);
+					hasJumped = true;
+				}
+
+				rb.velocity += new Vector2 (0.0f, -gravity * Time.fixedDeltaTime);
+				rb.velocity += moveVec;
+			}
 			break;
 		case State.Jumping:
-			jumpTimer--;
-			if (jumpTimer <= 0)
-				st = State.Falling;
-			if (wall)
-				st = State.Wall;
-			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
+			{
+				jumpTimer--;
+				if (jumpTimer <= 0)
+					st = State.Falling;
+				if (wall)
+					st = State.Wall;
+
+				Vector2 moveVec = new Vector2 (0.0f, 0.0f);
+
+				if (Input.GetButton ("Jump")/* && !hasJumped*/) {
+					moveVec += new Vector2 (0.0f, -rb.velocity.y + jumpPower * Time.fixedDeltaTime);
+					hasJumped = true;
+				} else {
+					st = State.Falling; // jump released; skip to falling state
+				}
+
+				rb.velocity += new Vector2 (0.0f, -gravity * Time.fixedDeltaTime);
+				rb.velocity += moveVec;
+			}
 			break;
 		case State.Falling:
 			if (grounded)
@@ -130,13 +157,6 @@ public class CatController : MonoBehaviour {
 				else if (moveVec.x == 0.0f)
 					moveVec.x -= rb.velocity.x;
 
-				if (Input.GetButton ("Jump") && !hasJumped) {
-					st = State.Jumping;
-					jumpTimer = jumpTime;
-					moveVec += new Vector2(0.0f, jumpPower * Time.deltaTime);
-					hasJumped = true;
-				}
-
 				rb.velocity += moveVec;
 
 				Vector2 clampedVel = rb.velocity;
@@ -154,13 +174,6 @@ public class CatController : MonoBehaviour {
 					moveVec.x -= Mathf.Sign (rb.velocity.x) * (friction * Time.deltaTime * jumpMult);
 				else if (moveVec.x == 0.0f)
 					moveVec.x -= rb.velocity.x;
-
-				if (Input.GetButton ("Jump")/* && !hasJumped*/) {
-					moveVec += new Vector2(0.0f, -rb.velocity.y + jumpPower * Time.deltaTime);
-					hasJumped = true;
-				} else {
-                    st = State.Falling; // jump released; skip to falling state
-                }
 
 				rb.velocity += moveVec;
 
