@@ -6,8 +6,8 @@ enum State { Grounded, Jumping, Falling, Wall };
 
 public class CatController : MonoBehaviour {
 	[SerializeField] private float moveAccel = 50.0f;
-	[SerializeField] private float jumpPower = 1000.0f;
-	[SerializeField] private float maxSpeed = 15.0f;
+	[SerializeField] private float jumpPower = 1500.0f;
+	[SerializeField] private float maxSpeed = 10.0f;
 	[SerializeField] private float friction = 40.0f;
 	[SerializeField] private float gravity = 25.0f;
 	[SerializeField] private float jumpMult = 0.8f;	// movement multiplier while jumping
@@ -25,7 +25,7 @@ public class CatController : MonoBehaviour {
 
 	bool grounded = false;
 	bool wall = false;
-    float groundRadius = 0.1f;
+    float groundRadius = 0.05f;
 
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
@@ -77,8 +77,7 @@ public class CatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (hasJumped && !Input.GetButton ("Jump"))
-			hasJumped = false;
+		
 		
 		switch (st) {
 		case State.Grounded:
@@ -99,6 +98,9 @@ public class CatController : MonoBehaviour {
 				}
 
 				rb.velocity += moveVec;
+
+                if (hasJumped && !Input.GetButton ("Jump"))
+			        hasJumped = false;
 
 				Vector2 clampedVel = rb.velocity;
 				clampedVel.x = Mathf.Clamp (rb.velocity.x, -maxSpeed, maxSpeed);
