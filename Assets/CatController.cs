@@ -8,7 +8,6 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float moveAccel = 50.0f;
 	[SerializeField] private float jumpPower = 1000.0f;
 	[SerializeField] private float maxSpeed = 15.0f;
-	//Changing from 40 to 60
 	[SerializeField] private float friction = 60.0f;
 	[SerializeField] private float gravity = 25.0f;
 	[SerializeField] private float jumpMult = 0.8f;	// movement multiplier while jumping
@@ -16,19 +15,29 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float wallFriction = 0.5f;
 
 	[SerializeField] private int jumpTime = 10;	// number of fixed updates a jump lasts for
+    [SerializeField] private int attackTime = 10;
 
 	[SerializeField] private Transform groundCheck;
     [SerializeField] private Transform wallCheckRight;
     [SerializeField] private Transform wallCheckLeft;
 	[SerializeField] LayerMask groundMask;
+
+    [SerializeField] private Collider2D attackHitbox;
+
 	Rigidbody2D rb;
-	private Vector3 offset;
+
+	private Vector3 offset; // what is this? -nah
+
 	bool grounded = false;
 	bool wall = false;
-    float groundRadius = 0.1f;
+    float groundRadius = 0.05f;
 
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
+
+    bool isAttacking = false;
+    bool hasAttacked = false;
+    int attackTimer = 0;
 
 	State st = State.Falling;
 
@@ -47,10 +56,12 @@ public class CatController : MonoBehaviour {
 		temp.y = temp.y + 2;
 		Camera.main.transform.position =   temp;
 		//
+
 		grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundMask.value);
 		float moveDir = Input.GetAxis("Horizontal");
         wall = Physics2D.OverlapCircle(wallCheckRight.position, groundRadius, groundMask.value) ||
             Physics2D.OverlapCircle(wallCheckLeft.position, groundRadius, groundMask.value);
+
 
 		switch (st) {
 		case State.Grounded:
@@ -82,17 +93,26 @@ public class CatController : MonoBehaviour {
             rb.velocity *= wallFriction;
 			break;
 		}
+
+        if (Input.GetButton("Fire1") && !hasAttacked && !isAttacking) {
+            attackHitbox.enabled = true;
+            attackTimer = attackTime;
+        } else if (isAttacking) {
+            attackTimer++;
+        } else if (attackTimer <= 0) {
+            attackHitbox.enabled = false;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-		if (hasJumped && !Input.GetButton ("Jump"))
-			hasJumped = false;
-		
+
 		switch (st) {
 		case State.Grounded:
 			{
+                if (hasJumped && !Input.GetButton ("Jump"))
+			        hasJumped = false;
+
 				float moveDir = Input.GetAxis("Horizontal");
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir, 0.0f);
 
@@ -180,4 +200,11 @@ public class CatController : MonoBehaviour {
 		}
 		
 	}
+
+    void OnTriggerEnter2D(Collider2D other) {
+        LifeController lc = other.GetComponent<LifeController>();
+        if (lc) {
+            lc.Kill();
+        }
+    }
 }
