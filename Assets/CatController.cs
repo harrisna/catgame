@@ -8,7 +8,8 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float moveAccel = 50.0f;
 	[SerializeField] private float jumpPower = 1000.0f;
 	[SerializeField] private float maxSpeed = 15.0f;
-	[SerializeField] private float friction = 40.0f;
+	//Changing from 40 to 60
+	[SerializeField] private float friction = 60.0f;
 	[SerializeField] private float gravity = 25.0f;
 	[SerializeField] private float jumpMult = 0.8f;	// movement multiplier while jumping
 	[SerializeField] private float airControlMult = 0.4f;	// movement multiplier while falling
@@ -20,9 +21,8 @@ public class CatController : MonoBehaviour {
     [SerializeField] private Transform wallCheckRight;
     [SerializeField] private Transform wallCheckLeft;
 	[SerializeField] LayerMask groundMask;
-
 	Rigidbody2D rb;
-
+	private Vector3 offset;
 	bool grounded = false;
 	bool wall = false;
     float groundRadius = 0.1f;
@@ -35,9 +35,18 @@ public class CatController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
+		//Calculating camera offset
+		offset = transform.position - rb.transform.position;
+		
 	}
 
 	void FixedUpdate() {
+		//Camera movement
+		Vector3  temp = rb.transform.position +offset;
+		temp.z = Camera.main.transform.position.z;
+		temp.y = temp.y + 2;
+		Camera.main.transform.position =   temp;
+		//
 		grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundMask.value);
 		float moveDir = Input.GetAxis("Horizontal");
         wall = Physics2D.OverlapCircle(wallCheckRight.position, groundRadius, groundMask.value) ||
@@ -77,6 +86,7 @@ public class CatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
 		if (hasJumped && !Input.GetButton ("Jump"))
 			hasJumped = false;
 		
@@ -168,5 +178,6 @@ public class CatController : MonoBehaviour {
 			}
 			break;
 		}
+		
 	}
 }
