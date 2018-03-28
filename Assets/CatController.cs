@@ -22,7 +22,8 @@ public class CatController : MonoBehaviour {
     [SerializeField] private Transform wallCheckLeft;
 	[SerializeField] LayerMask groundMask;
 
-    [SerializeField] private Collider2D attackHitbox;
+    [SerializeField] private Collider2D attackHitboxRight;
+	[SerializeField] private Collider2D attackHitboxLeft;
 
 	Rigidbody2D rb;
 
@@ -31,6 +32,8 @@ public class CatController : MonoBehaviour {
 	bool grounded = false;
 	bool wall = false;
     float groundRadius = 0.05f;
+	float groundLen = 1.0f;
+	float wallLen = 1.5f;
 
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
@@ -38,6 +41,8 @@ public class CatController : MonoBehaviour {
     bool isAttacking = false;
     bool hasAttacked = false;
     int attackTimer = 0;
+
+	bool facingRight = false;
 
 	State st = State.Falling;
 
@@ -57,12 +62,15 @@ public class CatController : MonoBehaviour {
 		Camera.main.transform.position =   temp;
 		//
 
-		grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundMask.value);
 		float moveDir = Input.GetAxis("Horizontal");
-		if (moveDir > 0)
-			wall = Physics2D.OverlapCircle (wallCheckRight.position, groundRadius, groundMask.value);
-		else if (moveDir < 0)
-			wall = Physics2D.OverlapCircle (wallCheckLeft.position, groundRadius, groundMask.value);
+		facingRight = (moveDir > 0.0f);
+
+		grounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(groundRadius, groundLen), CapsuleDirection2D.Horizontal, 0.0f, groundMask.value);
+
+		if (facingRight)
+			wall = Physics2D.OverlapCapsule(wallCheckRight.position, new Vector2(groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
+		else if (Mathf.Abs(moveDir) > 0.0f)
+			wall = Physics2D.OverlapCapsule(wallCheckLeft.position, new Vector2(groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
 		else
 			wall = false;
 
@@ -119,8 +127,11 @@ public class CatController : MonoBehaviour {
 				st = State.Grounded;
             if (!wall)
                 st = State.Falling;
+			
 			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
-            rb.velocity *= wallFriction;
+
+			if (rb.velocity.y < 0.0f)
+            	rb.velocity *= wallFriction;
 			break;
 		}
 
@@ -128,14 +139,18 @@ public class CatController : MonoBehaviour {
             hasAttacked = false;
 
         if (Input.GetButton("Fire1") && !hasAttacked && !isAttacking) {
-            attackHitbox.enabled = true;
+			if (facingRight)
+				attackHitboxRight.enabled = true;
+			else
+				attackHitboxLeft.enabled = true;
             attackTimer = attackTime;
             hasAttacked = true;
             isAttacking = true;
         } else if (isAttacking && attackTimer > 0) {
             attackTimer--;
         } else if (isAttacking) {
-            attackHitbox.enabled = false;
+            attackHitboxRight.enabled = false;
+			attackHitboxLeft.enabled = false;
             isAttacking = false;
         }
 	}
