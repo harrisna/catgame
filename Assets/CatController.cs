@@ -27,12 +27,11 @@ public class CatController : MonoBehaviour {
 
 	Rigidbody2D rb;
 
-	private Vector3 offset; // what is this? -nah
 
 	bool grounded = false;
 	bool wall = false;
     float groundRadius = 0.05f;
-	float groundLen = 1.0f;
+	float groundLen = 0.75f;
 	float wallLen = 1.5f;
 
 	bool hasJumped = false;	// prevent holding jump
@@ -43,24 +42,17 @@ public class CatController : MonoBehaviour {
     int attackTimer = 0;
 
 	bool facingRight = false;
+	bool clingingRight = false;
 
 	State st = State.Falling;
 
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
-		//Calculating camera offset
-		offset = transform.position - rb.transform.position;
 		
 	}
 
 	void FixedUpdate() {
-		//Camera movement
-		Vector3  temp = rb.transform.position +offset;
-		temp.z = Camera.main.transform.position.z;
-		temp.y = temp.y + 2;
-		Camera.main.transform.position =   temp;
-		//
 
 		float moveDir = Input.GetAxis("Horizontal");
 		facingRight = (moveDir > 0.0f);
@@ -132,6 +124,7 @@ public class CatController : MonoBehaviour {
 
 			if (rb.velocity.y < 0.0f)
             	rb.velocity *= wallFriction;
+			
 			break;
 		}
 
