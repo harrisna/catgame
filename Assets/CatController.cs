@@ -7,6 +7,7 @@ enum State { Grounded, Jumping, Falling, Wall };
 public class CatController : MonoBehaviour {
 	[SerializeField] private float moveAccel = 50.0f;
 	[SerializeField] private float jumpPower = 1000.0f;
+	[SerializeField] private float wallJumpPower = 1000.0f;
 	[SerializeField] private float maxSpeed = 15.0f;
 	[SerializeField] private float friction = 60.0f;
 	[SerializeField] private float gravity = 25.0f;
@@ -16,6 +17,7 @@ public class CatController : MonoBehaviour {
 
 	[SerializeField] private int jumpTime = 10;	// number of fixed updates a jump lasts for
     [SerializeField] private int attackTime = 10;
+	[SerializeField] private int clingTime = 10;	// number of fixed updates a player has to hold an opposing direction to uncling from a wall
 
 	[SerializeField] private Transform groundCheck;
     [SerializeField] private Transform wallCheckRight;
@@ -36,6 +38,8 @@ public class CatController : MonoBehaviour {
 
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
+
+	int clingTimer = 0;
 
     bool isAttacking = false;
     bool hasAttacked = false;
@@ -91,8 +95,11 @@ public class CatController : MonoBehaviour {
 				jumpTimer--;
 				if (jumpTimer <= 0)
 					st = State.Falling;
-				if (wall)
+				if (wall) {
+					clingingRight = facingRight;
+					clingTimer = clingTime;
 					st = State.Wall;
+				}
 
 				Vector2 moveVec = new Vector2 (0.0f, 0.0f);
 
@@ -110,15 +117,37 @@ public class CatController : MonoBehaviour {
 		case State.Falling:
 			if (grounded)
 				st = State.Grounded;
-			if (wall)
+			if (wall) {
+				clingingRight = facingRight;
+				clingTimer = clingTime;
 				st = State.Wall;
+			}
 			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
 			break;
 		case State.Wall:
 			if (grounded)
 				st = State.Grounded;
-            if (!wall)
-                st = State.Falling;
+
+			if (clingingRight && !Physics2D.OverlapCapsule (wallCheckRight.position, new Vector2 (groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value) ||
+			    !clingingRight && !Physics2D.OverlapCapsule (wallCheckLeft.position, new Vector2 (groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value))
+				st = State.Falling;	// slid off wall; skip to falling
+
+			if (moveDir != 0.0f && facingRight != clingingRight) {
+				clingTimer--;
+			} else {
+				clingTimer = clingTime;
+			}
+
+			if (clingTimer <= 0) {
+				st = State.Falling;
+			}
+
+			if (Input.GetButton ("Jump") && !hasJumped) {
+				st = State.Jumping;
+				jumpTimer = jumpTime;
+				rb.velocity += new Vector2 (wallJumpPower * Time.fixedDeltaTime, 0.0f);
+				hasJumped = true;
+			}
 			
 			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
 
@@ -211,6 +240,9 @@ public class CatController : MonoBehaviour {
 			break;
 		case State.Wall:
 			{
+				if (hasJumped && !Input.GetButton ("Jump"))
+					hasJumped = false;
+
 				float moveDir = Input.GetAxis("Horizontal");
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * airControlMult, 0.0f);
 
