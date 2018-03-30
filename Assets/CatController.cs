@@ -59,7 +59,9 @@ public class CatController : MonoBehaviour {
 	void FixedUpdate() {
 
 		float moveDir = Input.GetAxis("Horizontal");
-		facingRight = (moveDir > 0.0f);
+
+		if (moveDir != 0.0f)
+			facingRight = (moveDir > 0.0f);
 
 		grounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(groundRadius, groundLen), CapsuleDirection2D.Horizontal, 0.0f, groundMask.value);
 
@@ -145,7 +147,12 @@ public class CatController : MonoBehaviour {
 			if (Input.GetButton ("Jump") && !hasJumped) {
 				st = State.Jumping;
 				jumpTimer = jumpTime;
-				rb.velocity += new Vector2 (wallJumpPower * Time.fixedDeltaTime, 0.0f);
+
+				if (!facingRight)
+					rb.velocity += new Vector2 (wallJumpPower * Time.fixedDeltaTime, 0.0f);
+				else 
+					rb.velocity += new Vector2 (-wallJumpPower * Time.fixedDeltaTime, 0.0f);
+				
 				hasJumped = true;
 			}
 			

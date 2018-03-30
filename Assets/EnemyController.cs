@@ -20,10 +20,6 @@ public class EnemyController : MonoBehaviour {
 		
 	}
 	
-	void OnMouseDown(){
-		Destroy(this.gameObject);
-	}
-	
 	// Update is called once per frame
 	void Update () {
              if(origin - transform.position.x > distance)
