@@ -17,7 +17,7 @@ public class CatController : MonoBehaviour {
 
 	[SerializeField] private int jumpTime = 10;	// number of fixed updates a jump lasts for
     [SerializeField] private int attackTime = 10;
-	[SerializeField] private int clingTime = 10;	// number of fixed updates a player has to hold an opposing direction to uncling from a wall
+	[SerializeField] private int clingTime = 100;	// number of fixed updates a player has to hold an opposing direction to uncling from a wall
 
 	[SerializeField] private Transform groundCheck;
     [SerializeField] private Transform wallCheckRight;
@@ -47,8 +47,9 @@ public class CatController : MonoBehaviour {
 
 	bool facingRight = false;
 	bool clingingRight = false;
+	bool hasClung = false;
 
-	State st = State.Falling;
+	[SerializeField] State st = State.Falling;
 
 	// Use this for initialization
 	void Start () {
@@ -76,6 +77,8 @@ public class CatController : MonoBehaviour {
 		switch (st) {
 		case State.Grounded:
 			{
+				hasClung = false;
+
 				if (!grounded)
 					st = State.Falling;
 
@@ -97,7 +100,7 @@ public class CatController : MonoBehaviour {
 				jumpTimer--;
 				if (jumpTimer <= 0)
 					st = State.Falling;
-				if (wall) {
+				if (wall && !hasClung) {
 					clingingRight = facingRight;
 					clingTimer = clingTime;
 					st = State.Wall;
@@ -119,7 +122,7 @@ public class CatController : MonoBehaviour {
 		case State.Falling:
 			if (grounded)
 				st = State.Grounded;
-			if (wall) {
+			if (wall && !hasClung) {
 				clingingRight = facingRight;
 				clingTimer = clingTime;
 				st = State.Wall;
@@ -127,6 +130,8 @@ public class CatController : MonoBehaviour {
 			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
 			break;
 		case State.Wall:
+			hasClung = true;
+
 			if (grounded)
 				st = State.Grounded;
 
@@ -135,9 +140,9 @@ public class CatController : MonoBehaviour {
 				st = State.Falling;	// slid off wall; skip to falling
 
 			if (moveDir != 0.0f && facingRight != clingingRight) {
-				clingTimer--;
+				clingTimer -= 5;
 			} else {
-				clingTimer = clingTime;
+				clingTimer--;
 			}
 
 			if (clingTimer <= 0) {
