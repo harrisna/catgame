@@ -28,13 +28,13 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private Collider2D attackHitboxLeft;
 
 	Rigidbody2D rb;
-
+	SpriteRenderer sp;
 
 	bool grounded = false;
 	bool wall = false;
     float groundRadius = 0.05f;
-	float groundLen = 0.75f;
-	float wallLen = 1.5f;
+	float groundLen = 1.75f;
+	float wallLen = 1.75f;
 
 	bool hasJumped = false;	// prevent holding jump
 	int jumpTimer = 0;
@@ -54,7 +54,7 @@ public class CatController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
-		
+		sp = GetComponent<SpriteRenderer>();
 	}
 
 	void FixedUpdate() {
@@ -191,6 +191,7 @@ public class CatController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		sp.flipX = !facingRight;
 
 		switch (st) {
 		case State.Grounded:
