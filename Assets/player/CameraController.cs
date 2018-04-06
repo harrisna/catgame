@@ -9,7 +9,6 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		GetComponent<Rigidbody2D> ();
 		//offset
 		offset = playerTransform.position - rb.transform.position;
 	}
@@ -17,7 +16,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Camera Movement
-		Vector3 temp = rb.transform.position + offset;
+		Vector3 temp = playerTransform.position + offset;
 		temp.z = Camera.main.transform.position.z;
 		//Y Modifier
 		temp.y = temp.y + 3;

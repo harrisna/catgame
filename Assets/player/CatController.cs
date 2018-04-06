@@ -27,6 +27,9 @@ public class CatController : MonoBehaviour {
     [SerializeField] private Collider2D attackHitboxRight;
 	[SerializeField] private Collider2D attackHitboxLeft;
 
+	[SerializeField] private bool canWallJump = true;
+	[SerializeField] private float glideGravity = 0.1f;
+
 	Rigidbody2D rb;
 	SpriteRenderer sp;
 
@@ -48,6 +51,8 @@ public class CatController : MonoBehaviour {
 	bool facingRight = false;
 	bool clingingRight = false;
 	bool hasClung = false;
+
+
 
 	[SerializeField] State st = State.Falling;
 
@@ -127,7 +132,11 @@ public class CatController : MonoBehaviour {
 				clingTimer = clingTime;
 				st = State.Wall;
 			}
-			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
+
+			if (!canWallJump && Input.GetButton ("Jump") && rb.velocity.y < 0.0f)
+				rb.velocity += new Vector2 (0.0f, -gravity * glideGravity * Time.fixedDeltaTime);
+			else
+				rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
 			break;
 		case State.Wall:
 			hasClung = true;
@@ -149,7 +158,7 @@ public class CatController : MonoBehaviour {
 				st = State.Falling;
 			}
 
-			if (Input.GetButton ("Jump") && !hasJumped) {
+			if (canWallJump && Input.GetButton ("Jump") && !hasJumped) {
 				st = State.Jumping;
 				jumpTimer = jumpTime;
 
@@ -253,7 +262,7 @@ public class CatController : MonoBehaviour {
 			break;
 		case State.Wall:
 			{
-				if (hasJumped && !Input.GetButton ("Jump"))
+				if (canWallJump && hasJumped && !Input.GetButton ("Jump"))
 					hasJumped = false;
 
 				float moveDir = Input.GetAxis("Horizontal");
