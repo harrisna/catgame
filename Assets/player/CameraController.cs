@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Camera Movement
-		Vector3 temp = playerTransform.position + offset;
+		Vector3 temp = playerTransform.position;
 		temp.z = transform.position.z;
 		//Y Modifier
 		temp.y = temp.y + 3;

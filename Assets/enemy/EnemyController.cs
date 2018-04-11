@@ -13,15 +13,17 @@ public class EnemyController : MonoBehaviour {
 	[SerializeField] private float ledgeCheckerOffset = 0.53125f;
 	[SerializeField] private float ledgeCheckerRaySize = 2f;
 	[SerializeField] private float wallCheckerOffset = 0.51f;
-	[SerializeField] private float wallCheckerRaySize = 0.01f;
+	[SerializeField] private float wallCheckerRaySize = 0.365f;
+	private SpriteRenderer sp;
 	// Use this for initialization
 	void Start () {
 		origin = transform.position.x;
 		lastSpeed = speed;
+		sp = GetComponent<SpriteRenderer>();
 	}
 	
 	void OnCollisionEnter2D(Collision2D col){
-        if(col.gameObject.name == "Player")
+        if(col.gameObject.name == "AlivePlayer" || col.gameObject.name == "DeadPlayer")
         {
             Destroy(col.gameObject);
         }
@@ -36,20 +38,32 @@ public class EnemyController : MonoBehaviour {
 	  if (ledgeRight.collider == null) {
 		  
             speed = -directionSpeed; //flip direction to left
+			sp.flipX = false;
       }else if (ledgeLeft.collider == null) {
 		  
             speed = directionSpeed; //flip direction to  right
+			sp.flipX = true;
         }
 		//Wall checking
 		RaycastHit2D wallRight = Physics2D.Raycast(new Vector2(transform.position.x+wallCheckerOffset,transform.position.y), Vector2.right, wallCheckerRaySize);
+		//
+		
+		//
 		RaycastHit2D wallLeft = Physics2D.Raycast(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, wallCheckerRaySize);
+		//
+		
+       // Debug.DrawRay(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, Color.green);
+		//Debug.DrawRay(new Vector2(transform.position.x-ledgeCheckerOffset,transform.position.y), Vector2.down, Color.red);
+		
 		
 		if (wallRight.collider != null) {
 		  
             speed = -directionSpeed; //flip direction to left
+			sp.flipX = false;
       }else if (wallLeft.collider != null) {
 		  
             speed = directionSpeed; //flip direction to  right
+			sp.flipX = true;
         }
 		
     }
@@ -60,6 +74,5 @@ public class EnemyController : MonoBehaviour {
         
 			 
              transform.Translate(speed*Time.deltaTime,0,0);
-         
 	}
 }
