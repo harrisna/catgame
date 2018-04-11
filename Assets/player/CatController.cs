@@ -30,6 +30,8 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private bool canWallJump = true;
 	[SerializeField] private float glideGravity = 0.1f;
 
+	[SerializeField] private int player = 1;
+
 	Rigidbody2D rb;
 	SpriteRenderer sp;
 
@@ -64,7 +66,7 @@ public class CatController : MonoBehaviour {
 
 	void FixedUpdate() {
 
-		float moveDir = Input.GetAxis("Horizontal");
+		float moveDir = InputController.GetAxis(player);
 
 		if (moveDir != 0.0f)
 			facingRight = (moveDir > 0.0f);
@@ -89,7 +91,7 @@ public class CatController : MonoBehaviour {
 
 				Vector2 moveVec = new Vector2 (0.0f, 0.0f);
 
-				if (Input.GetButton ("Jump") && !hasJumped) {
+				if (InputController.GetButton(player, InputButton.Jump) && !hasJumped) {
 					st = State.Jumping;
 					jumpTimer = jumpTime;
 					moveVec += new Vector2 (0.0f, jumpPower * Time.fixedDeltaTime);
@@ -113,7 +115,7 @@ public class CatController : MonoBehaviour {
 
 				Vector2 moveVec = new Vector2 (0.0f, 0.0f);
 
-				if (Input.GetButton ("Jump")/* && !hasJumped*/) {
+				if (InputController.GetButton(player, InputButton.Jump)/* && !hasJumped*/) {
 					moveVec += new Vector2 (0.0f, -rb.velocity.y + jumpPower * Time.fixedDeltaTime);
 					hasJumped = true;
 				} else {
@@ -133,7 +135,7 @@ public class CatController : MonoBehaviour {
 				st = State.Wall;
 			}
 
-			if (!canWallJump && Input.GetButton ("Jump") && rb.velocity.y < 0.0f)
+			if (!canWallJump && InputController.GetButton(player, InputButton.Jump) && rb.velocity.y < 0.0f)
 				rb.velocity += new Vector2 (0.0f, -gravity * glideGravity * Time.fixedDeltaTime);
 			else
 				rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
@@ -158,7 +160,7 @@ public class CatController : MonoBehaviour {
 				st = State.Falling;
 			}
 
-			if (canWallJump && Input.GetButton ("Jump") && !hasJumped) {
+			if (canWallJump && InputController.GetButton(player, InputButton.Jump) && !hasJumped) {
 				st = State.Jumping;
 				jumpTimer = jumpTime;
 
@@ -178,10 +180,10 @@ public class CatController : MonoBehaviour {
 			break;
 		}
 
-        if (!isAttacking && hasAttacked && !Input.GetButton("Fire1"))
+		if (!isAttacking && hasAttacked && !InputController.GetButton(player, InputButton.Attack))
             hasAttacked = false;
 
-        if (Input.GetButton("Fire1") && !hasAttacked && !isAttacking) {
+		if (InputController.GetButton(player, InputButton.Attack) && !hasAttacked && !isAttacking) {
 			if (facingRight)
 				attackHitboxRight.enabled = true;
 			else
@@ -205,10 +207,10 @@ public class CatController : MonoBehaviour {
 		switch (st) {
 		case State.Grounded:
 			{
-                if (hasJumped && !Input.GetButton ("Jump"))
+				if (hasJumped && !InputController.GetButton (player, InputButton.Jump))
 			        hasJumped = false;
 
-				float moveDir = Input.GetAxis("Horizontal");
+				float moveDir = InputController.GetAxis(player);
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir, 0.0f);
 
 				if (moveVec.x == 0.0f && Mathf.Abs(rb.velocity.x) > (friction * Time.deltaTime))
@@ -226,7 +228,7 @@ public class CatController : MonoBehaviour {
 			break;
 		case State.Jumping:
 			{
-				float moveDir = Input.GetAxis("Horizontal");
+				float moveDir = InputController.GetAxis(player);
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * jumpMult, 0.0f);
 
 				if (moveVec.x == 0.0f && Mathf.Abs(rb.velocity.x) > (friction * Time.deltaTime * jumpMult))
@@ -244,7 +246,7 @@ public class CatController : MonoBehaviour {
 			break;
 		case State.Falling:
 			{
-				float moveDir = Input.GetAxis("Horizontal");
+				float moveDir = InputController.GetAxis(player);
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * airControlMult, 0.0f);
 
 				if (moveVec.x == 0.0f && Mathf.Abs(rb.velocity.x) > (friction * Time.deltaTime * airControlMult))
@@ -265,7 +267,7 @@ public class CatController : MonoBehaviour {
 				if (canWallJump && hasJumped && !Input.GetButton ("Jump"))
 					hasJumped = false;
 
-				float moveDir = Input.GetAxis("Horizontal");
+				float moveDir = InputController.GetAxis(player);
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * airControlMult, 0.0f);
 
 				if (moveVec.x == 0.0f && Mathf.Abs(rb.velocity.x) > (friction * Time.deltaTime * airControlMult))
