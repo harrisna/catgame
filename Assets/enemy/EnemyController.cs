@@ -14,6 +14,7 @@ public class EnemyController : MonoBehaviour {
 	[SerializeField] private float ledgeCheckerRaySize = 2f;
 	[SerializeField] private float wallCheckerOffset = 0.51f;
 	[SerializeField] private float wallCheckerRaySize = 0.365f;
+	[SerializeField] LayerMask groundMask;
 	private SpriteRenderer sp;
 	// Use this for initialization
 	void Start () {
@@ -33,8 +34,8 @@ public class EnemyController : MonoBehaviour {
 	void FixedUpdate()
     {
 	//Ledge Checking
-      RaycastHit2D ledgeRight = Physics2D.Raycast(new Vector2(transform.position.x+ledgeCheckerOffset,transform.position.y), Vector2.down, ledgeCheckerRaySize);
-	  RaycastHit2D ledgeLeft = Physics2D.Raycast(new Vector2(transform.position.x-ledgeCheckerOffset,transform.position.y), Vector2.down, ledgeCheckerRaySize);
+      RaycastHit2D ledgeRight = Physics2D.Raycast(new Vector2(transform.position.x+ledgeCheckerOffset,transform.position.y), Vector2.down, ledgeCheckerRaySize, groundMask);
+	  RaycastHit2D ledgeLeft = Physics2D.Raycast(new Vector2(transform.position.x-ledgeCheckerOffset,transform.position.y), Vector2.down, ledgeCheckerRaySize, groundMask);
 	  if (ledgeRight.collider == null) {
 		  
             speed = -directionSpeed; //flip direction to left
@@ -45,11 +46,11 @@ public class EnemyController : MonoBehaviour {
 			sp.flipX = true;
         }
 		//Wall checking
-		RaycastHit2D wallRight = Physics2D.Raycast(new Vector2(transform.position.x+wallCheckerOffset,transform.position.y), Vector2.right, wallCheckerRaySize);
+		RaycastHit2D wallRight = Physics2D.Raycast(new Vector2(transform.position.x+wallCheckerOffset,transform.position.y), Vector2.right, wallCheckerRaySize, groundMask);
 		//
 		
 		//
-		RaycastHit2D wallLeft = Physics2D.Raycast(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, wallCheckerRaySize);
+		RaycastHit2D wallLeft = Physics2D.Raycast(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, wallCheckerRaySize, groundMask);
 		//
 		
        // Debug.DrawRay(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, Color.green);

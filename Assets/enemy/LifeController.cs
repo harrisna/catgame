@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LifeController : MonoBehaviour {
 
-    private DeathController dc;
+    [SerializeField] private DeathController dc;
 
     public void Kill() {
         dc.Kill();
