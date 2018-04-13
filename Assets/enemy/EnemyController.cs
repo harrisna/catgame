@@ -39,11 +39,11 @@ public class EnemyController : MonoBehaviour {
 	  if (ledgeRight.collider == null) {
 		  
             speed = -directionSpeed; //flip direction to left
-			sp.flipX = false;
+			
       }else if (ledgeLeft.collider == null) {
 		  
             speed = directionSpeed; //flip direction to  right
-			sp.flipX = true;
+			
         }
 		//Wall checking
 		RaycastHit2D wallRight = Physics2D.Raycast(new Vector2(transform.position.x+wallCheckerOffset,transform.position.y), Vector2.right, wallCheckerRaySize, groundMask);
@@ -71,7 +71,13 @@ public class EnemyController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+			//Check if it is facing left or right and make sure the image is facing that direction
 			
+			if(speed == -directionSpeed){
+				sp.flipX=false;
+			}else{
+				sp.flipX = true;
+			}
         
 			 
              transform.Translate(speed*Time.deltaTime,0,0);
