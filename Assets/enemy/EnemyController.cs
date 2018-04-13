@@ -16,11 +16,13 @@ public class EnemyController : MonoBehaviour {
 	[SerializeField] private float wallCheckerRaySize = 0.365f;
 	[SerializeField] LayerMask groundMask;
 	private SpriteRenderer sp;
+	private Rigidbody2D rb;
 	// Use this for initialization
 	void Start () {
 		origin = transform.position.x;
 		lastSpeed = speed;
 		sp = GetComponent<SpriteRenderer>();
+		rb = GetComponent<Rigidbody2D>();
 	}
 	
 	void OnCollisionEnter2D(Collision2D col){
@@ -80,6 +82,7 @@ public class EnemyController : MonoBehaviour {
 			}
         
 			 
-             transform.Translate(speed*Time.deltaTime,0,0);
+             //transform.Translate(speed*Time.deltaTime,0,0);
+		rb.velocity = new Vector2(speed, rb.velocity.y);
 	}
 }
