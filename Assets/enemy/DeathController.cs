@@ -38,4 +38,10 @@ public class DeathController : MonoBehaviour {
     public void Kill() {
         isAlive = !isAlive;
     }
+
+	void OnDrawGizmos() {
+		Gizmos.color = Color.red;
+		Gizmos.DrawSphere (alivePos.position, 1.0f);
+		Gizmos.DrawSphere (deadPos.position, 1.0f);
+	}
 }

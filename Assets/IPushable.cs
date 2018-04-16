@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPushable<T>
-{
-    //void onButtonPress(T Button?);
+public interface IPushable {
+    void onActivate();
+	void onDeactivate();
 }
