@@ -5,7 +5,12 @@ licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - enemy: {instanceID: 0}
+  - alivePos: {instanceID: 0}
+  - deadPos: {instanceID: 0}
+  - aliveLC: {instanceID: 0}
+  - deadLC: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
