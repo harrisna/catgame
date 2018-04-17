@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class DoorController : MonoBehaviour, IPushable {
 
-	[SerializeField] private Collider2D c;
+	//[SerializeField] private GameObject door;
 
 	public void onActivate() {
-		c.enabled = false;
+		gameObject.active = false;
 	}
 
 	public void onDeactivate() {
-		c.enabled = true;
+		gameObject.active = true;
 	}
 }

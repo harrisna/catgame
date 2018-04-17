@@ -40,8 +40,9 @@ public class DeathController : MonoBehaviour {
     }
 
 	void OnDrawGizmos() {
-		Gizmos.color = Color.red;
+		Gizmos.color = Color.cyan;
 		Gizmos.DrawSphere (alivePos.position, 1.0f);
+		Gizmos.color = Color.red;
 		Gizmos.DrawSphere (deadPos.position, 1.0f);
 	}
 }

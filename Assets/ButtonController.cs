@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class ButtonController : MonoBehaviour {
 
+	[SerializeField] private GameObject pushable;
+	[SerializeField] private Sprite ButtonUp;
+	[SerializeField] private Sprite ButtonDown;
+
+	private SpriteRenderer sp;
+
 	// Use this for initialization
 	void Start () {
-		
+		sp = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
@@ -14,7 +20,17 @@ public class ButtonController : MonoBehaviour {
 		
 	}
 
-	void OnTriggerEnter(Collider other) {
-		//other.GetComponent<Pushable>().onButtonPress();
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.GetComponent<CatController>()) {
+			pushable.GetComponent<IPushable>().onActivate();
+			sp.sprite = ButtonDown;
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D other) {
+		if (other.GetComponent<CatController>()) {
+			pushable.GetComponent<IPushable>().onDeactivate();
+			sp.sprite = ButtonUp;
+		}
 	}
 }
