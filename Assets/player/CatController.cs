@@ -31,10 +31,12 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float glideGravity = 0.1f;
 
 	[SerializeField] private int player = 1;
-
+	public AudioClip jumpSound;
+	private AudioSource source;
 	Rigidbody2D rb;
 	SpriteRenderer sp;
-
+	bool jumpSoundPlayed = false;
+	bool wallJumpSoundPlayed = false;
 	bool grounded = false;
 	bool wall = false;
     float groundRadius = 0.05f;
@@ -62,6 +64,7 @@ public class CatController : MonoBehaviour {
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
 		sp = GetComponent<SpriteRenderer>();
+		source = GetComponent<AudioSource>();
 	}
 
 	void FixedUpdate() {
@@ -170,6 +173,12 @@ public class CatController : MonoBehaviour {
 					rb.velocity += new Vector2 (-wallJumpPower * Time.fixedDeltaTime, 0.0f);
 				
 				hasJumped = true;
+				
+				//Jump sound
+				if(!wallJumpSoundPlayed){
+					source.PlayOneShot(jumpSound);
+					wallJumpSoundPlayed = true;
+				}
 			}
 			
 			rb.velocity += new Vector2(0.0f, -gravity * Time.fixedDeltaTime);
@@ -207,6 +216,13 @@ public class CatController : MonoBehaviour {
 		switch (st) {
 		case State.Grounded:
 			{
+				if(jumpSoundPlayed){
+					jumpSoundPlayed = false;
+				}
+				if(wallJumpSoundPlayed){
+					wallJumpSoundPlayed = false;
+				}
+				
 				if (hasJumped && !InputController.GetButton (player, InputButton.Jump))
 			        hasJumped = false;
 
@@ -228,6 +244,12 @@ public class CatController : MonoBehaviour {
 			break;
 		case State.Jumping:
 			{
+				//Sound
+				if(!jumpSoundPlayed){
+				source.PlayOneShot(jumpSound);
+				jumpSoundPlayed = true;
+				}
+				//
 				float moveDir = InputController.GetAxis(player);
 				Vector2 moveVec = new Vector2((moveAccel * Time.deltaTime) * moveDir * jumpMult, 0.0f);
 

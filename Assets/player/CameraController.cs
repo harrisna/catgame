@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 //Camera size should be 13
 public class CameraController : MonoBehaviour {
-	[SerializeField] private float yModifyer = 7;
-	[SerializeField] private float aliveXStaticPosition = -9;
-	[SerializeField] private float deadXStaticPosition = 16;
+	[SerializeField] private float yModifyer = 7f;
+	[SerializeField] private float aliveXStaticPosition = -8.5f;
+	[SerializeField] private float deadXStaticPosition = 15.5f;
 	//public Rigidbody2D rb;
 	public Transform playerTransform;
 
