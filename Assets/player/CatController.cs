@@ -31,8 +31,10 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float glideGravity = 0.1f;
 
 	[SerializeField] private int player = 1;
+	
 	public AudioClip jumpSound;
 	private AudioSource source;
+	
 	Rigidbody2D rb;
 	SpriteRenderer sp;
 	bool jumpSoundPlayed = false;
@@ -65,6 +67,7 @@ public class CatController : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D>();
 		sp = GetComponent<SpriteRenderer>();
 		source = GetComponent<AudioSource>();
+	
 	}
 
 	void FixedUpdate() {
@@ -77,11 +80,12 @@ public class CatController : MonoBehaviour {
 		grounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(groundRadius, groundLen), CapsuleDirection2D.Horizontal, 0.0f, groundMask.value);
 
 		if (facingRight)
-			wall = Physics2D.OverlapCapsule (wallCheckRight.position, new Vector2 (groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
-		else if (Mathf.Abs (moveDir) > 0.0f)
-			wall = Physics2D.OverlapCapsule (wallCheckLeft.position, new Vector2 (groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
+			wall = Physics2D.OverlapCapsule(wallCheckRight.position, new Vector2(groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
+		else if (Mathf.Abs(moveDir) > 0.0f)
+			wall = Physics2D.OverlapCapsule(wallCheckLeft.position, new Vector2(groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
 		else
 			wall = false;
+
 
 		switch (st) {
 		case State.Grounded:
@@ -109,7 +113,7 @@ public class CatController : MonoBehaviour {
 				jumpTimer--;
 				if (jumpTimer <= 0)
 					st = State.Falling;
-				if (canWallJump && wall && !hasClung) {
+				if (wall && !hasClung) {
 					clingingRight = facingRight;
 					clingTimer = clingTime;
 					st = State.Wall;
@@ -131,7 +135,7 @@ public class CatController : MonoBehaviour {
 		case State.Falling:
 			if (grounded)
 				st = State.Grounded;
-			if (canWallJump && wall && !hasClung) {
+			if (wall && !hasClung) {
 				clingingRight = facingRight;
 				clingTimer = clingTime;
 				st = State.Wall;
