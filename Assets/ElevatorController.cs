@@ -7,7 +7,7 @@ public class ElevatorController : MonoBehaviour, IPushable {
 	[SerializeField] Transform down;
 	[SerializeField] Transform up;
 
-	private float oldElapsed = 1.5f;
+	private float oldElapsed = 0.0f;
 	private bool movingUp = false;
 
 	private Coroutine c = null;
@@ -35,9 +35,8 @@ public class ElevatorController : MonoBehaviour, IPushable {
 		Vector3 startPosition = transform.position;
 		Vector3 endPosition = movingUp ? up.position : down.position;
 
-		float targetDuration = 1.5f - (1.5f - oldElapsed);
+		float targetDuration = movingUp ? 1.5f - (oldElapsed) : 1.5f - (1.5f - oldElapsed);
 		float startTime = Time.time;
-		//float elapsed = 0.0f + (1.5f - oldElapsed);
 		float elapsed = 0.0f;
 
 		while (elapsed <= targetDuration) {
@@ -45,10 +44,10 @@ public class ElevatorController : MonoBehaviour, IPushable {
 			transform.position = Vector3.Lerp(startPosition, endPosition, proportion);
 			yield return null;
 			elapsed = Time.time - startTime;
-			oldElapsed = elapsed;
+			oldElapsed = movingUp ? elapsed : 1.5f - elapsed;
 		}
 
 		transform.position = endPosition;
-		oldElapsed = 1.5f;
+		oldElapsed = movingUp ? 1.5f : 0.0f;
 	}
 }
