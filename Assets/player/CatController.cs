@@ -92,8 +92,10 @@ public class CatController : MonoBehaviour {
 			{
 				hasClung = false;
 
-				if (!grounded)
+				if (!grounded) {
+					hasJumped = true;	// prevent buffering jumps, feels weird
 					st = State.Falling;
+				}
 
 				Vector2 moveVec = new Vector2 (0.0f, 0.0f);
 
