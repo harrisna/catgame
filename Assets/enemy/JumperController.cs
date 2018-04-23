@@ -31,10 +31,7 @@ public class JumperController : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter2D(Collision2D col){
-        if(col.gameObject.name == "AlivePlayer" || col.gameObject.name == "DeadPlayer")
-        {
-            Destroy(col.gameObject);
-        }
+        
 		
 		if(col.gameObject.name == "Tilemap"){
 			grounded = true;

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 enum State { Grounded, Jumping, Falling, Wall };
 
 public class CatController : MonoBehaviour {
@@ -14,7 +14,7 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float jumpMult = 0.8f;	// movement multiplier while jumping
 	[SerializeField] private float airControlMult = 0.4f;	// movement multiplier while falling
 	[SerializeField] private float wallFriction = 0.5f;
-
+	[SerializeField] private int lives;
 	[SerializeField] private int jumpTime = 10;	// number of fixed updates a jump lasts for
     [SerializeField] private int attackTime = 10;
 	[SerializeField] private int clingTime = 100;	// number of fixed updates a player has to hold an opposing direction to uncling from a wall
@@ -31,10 +31,12 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private float glideGravity = 0.1f;
 
 	[SerializeField] private int player = 1;
-	
+	public Vector3 spawnPosition;
+	public Text countText;
 	public AudioClip jumpSound;
 	private AudioSource source;
-	
+	private int collisionTimer;
+	private bool enemyCollisons;
 	Rigidbody2D rb;
 	SpriteRenderer sp;
 	bool jumpSoundPlayed = false;
@@ -67,7 +69,11 @@ public class CatController : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D>();
 		sp = GetComponent<SpriteRenderer>();
 		source = GetComponent<AudioSource>();
-	
+		spawnPosition = new Vector3(transform.position.x,transform.position.y,transform.position.z);
+		lives =9;
+		countText = Component.FindObjectOfType<Text>();
+		collisionTimer = 60;
+		enemyCollisons = true;
 	}
 
 	void FixedUpdate() {
@@ -217,7 +223,12 @@ public class CatController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		sp.flipX = !facingRight;
-
+		//Decrement collision timer, timer is so that enemy collisions can only happen once every 60 frames
+		collisionTimer--;
+		if(collisionTimer == 0){
+			collisionTimer = 60;
+			enemyCollisons = true;
+		}
 		switch (st) {
 		case State.Grounded:
 			{
@@ -320,4 +331,24 @@ public class CatController : MonoBehaviour {
             lc.Kill();
         }
     }
+	
+	void OnCollisionEnter2D(Collision2D col){
+		
+		Debug.Log(col.gameObject.name);
+        if(enemyCollisons &&(col.gameObject.name == "Pacing Enemy(Clone)" || col.gameObject.name == "Jumping Enemy(Clone)")){
+			enemyCollisons = false;
+			lives--;
+			if(lives <= 0){
+				countText.text = "Game Over!";
+				
+			}else{
+           // Destroy(col.gameObject);
+		   countText.text = "Lives: "+ lives.ToString();
+		   //Move the cat to it's spawn position
+			transform.position = spawnPosition;
+			}
+		   
+        }
+		
+	}
 }

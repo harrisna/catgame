@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class EnemyController : MonoBehaviour {
 	private float lastSpeed;
@@ -18,34 +18,17 @@ public class EnemyController : MonoBehaviour {
 	[SerializeField] LayerMask groundMask;
 	private SpriteRenderer sp;
 	private Rigidbody2D rb;
-	[SerializeField] private int lives;
-	public Text countText;
+	
 	// Use this for initialization
 	void Start () {
 		origin = transform.position.x;
 		lastSpeed = speed;
 		sp = GetComponent<SpriteRenderer>();
 		rb = GetComponent<Rigidbody2D>();
-		lives =9;
-		countText = Component.FindObjectOfType<Text>();
 		
 	}
 	
-	void OnCollisionEnter2D(Collision2D col){
-		lives--;
-        if(col.gameObject.name == "AlivePlayer" || col.gameObject.name == "DeadPlayer")
-        {
-			if(lives <= 0){
-				countText.text = "You Died!";
-				
-			}else{
-           // Destroy(col.gameObject);
-		   countText.text = "Lives: "+ lives.ToString();
-			}
-		   
-        }
-		
-	}
+	
 	
 	void FixedUpdate()
     {
@@ -69,7 +52,7 @@ public class EnemyController : MonoBehaviour {
 		RaycastHit2D wallLeft = Physics2D.Raycast(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, wallCheckerRaySize, groundMask);
 		//
 		
-       // Debug.DrawRay(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, Color.green);
+       Debug.DrawRay(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, Color.green);
 		//Debug.DrawRay(new Vector2(transform.position.x-ledgeCheckerOffset,transform.position.y), Vector2.down, Color.red);
 		
 		
