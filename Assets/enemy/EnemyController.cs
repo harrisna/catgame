@@ -52,7 +52,7 @@ public class EnemyController : MonoBehaviour {
 		RaycastHit2D wallLeft = Physics2D.Raycast(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, wallCheckerRaySize, groundMask);
 		//
 		
-       Debug.DrawRay(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, Color.green);
+       //Debug.DrawRay(new Vector2(transform.position.x-wallCheckerOffset,transform.position.y), Vector2.left, Color.green);
 		//Debug.DrawRay(new Vector2(transform.position.x-ledgeCheckerOffset,transform.position.y), Vector2.down, Color.red);
 		
 		
