@@ -351,4 +351,8 @@ public class CatController : MonoBehaviour {
         }
 		
 	}
+
+    public bool IsPlayer1() {
+        return canWallJump;
+    }
 }
