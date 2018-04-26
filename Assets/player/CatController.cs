@@ -335,7 +335,7 @@ public class CatController : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D col){
 		
 		Debug.Log(col.gameObject.name);
-        if(enemyCollisons &&(col.gameObject.name == "Pacing Enemy(Clone)" || col.gameObject.name == "Jumping Enemy(Clone)")){
+        if(/*enemyCollisons &&*/(col.gameObject.name == "Pacing Enemy(Clone)" || col.gameObject.name == "Jumping Enemy(Clone)")){
 			enemyCollisons = false;
 			lives--;
 			if(lives <= 0){

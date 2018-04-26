@@ -41,7 +41,11 @@ public class DeathController : MonoBehaviour {
 		deadBody.SetActive (isAlive);
 		
 		if(isAlive){
-			
+			aliveBody.transform.position = alive.transform.position;
+			deadBody.transform.position = dead.transform.position;
+		} else {
+			alive.transform.position = aliveBody.transform.position;
+			dead.transform.position = deadBody.transform.position;
 		}
 	}
 
