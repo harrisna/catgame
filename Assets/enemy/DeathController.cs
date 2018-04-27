@@ -42,10 +42,10 @@ public class DeathController : MonoBehaviour {
 		
 		if(isAlive){
 			aliveBody.transform.position = alive.transform.position;
-			deadBody.transform.position = dead.transform.position;
+			dead.transform.position = deadBody.transform.position;
 		} else {
 			alive.transform.position = aliveBody.transform.position;
-			dead.transform.position = deadBody.transform.position;
+			deadBody.transform.position = dead.transform.position;
 		}
 	}
 
