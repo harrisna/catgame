@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 enum State { Grounded, Jumping, Falling, Wall };
 
 public class CatController : MonoBehaviour {
@@ -331,6 +333,8 @@ public class CatController : MonoBehaviour {
             lc.Kill();
         }
     }
+
+
 	
 	void OnCollisionEnter2D(Collision2D col){
 		
@@ -340,7 +344,7 @@ public class CatController : MonoBehaviour {
 			lives--;
 			if(lives <= 0){
 				countText.text = "Game Over!";
-				
+				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 			}else{
            // Destroy(col.gameObject);
 		   countText.text = "Lives: "+ lives.ToString();

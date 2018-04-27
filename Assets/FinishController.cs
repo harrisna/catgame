@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FinishController : MonoBehaviour {
+
+	public Scene nextScene;
 
     bool player1 = false;
     bool player2 = false;
@@ -16,6 +19,8 @@ public class FinishController : MonoBehaviour {
 	void Update () {
 		if (player1 && player2) {
             // go to next scene
+			if (nextScene != null)
+				SceneManager.LoadScene(nextScene.name);
         }
 	}
 
