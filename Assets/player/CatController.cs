@@ -28,6 +28,8 @@ public class CatController : MonoBehaviour {
 
     [SerializeField] private Collider2D attackHitboxRight;
 	[SerializeField] private Collider2D attackHitboxLeft;
+	[SerializeField] private GameObject attackEffectLeft;
+	[SerializeField] private GameObject attackEffectRight;
 
 	[SerializeField] private bool canWallJump = true;
 	[SerializeField] private float glideGravity = 0.1f;
@@ -210,10 +212,13 @@ public class CatController : MonoBehaviour {
 		if (InputController.GetButton(player, InputButton.Attack) && !hasAttacked && !isAttacking) {
 			//Attack Sound
 			source.PlayOneShot(attackSound,0.5f);
-			if (facingRight)
+			if (facingRight) {
 				attackHitboxRight.enabled = true;
-			else
+				attackEffectRight.SetActive(true);
+			} else {
 				attackHitboxLeft.enabled = true;
+				attackEffectLeft.SetActive(true);
+			}
             attackTimer = attackTime;
             hasAttacked = true;
             isAttacking = true;
@@ -222,6 +227,8 @@ public class CatController : MonoBehaviour {
         } else if (isAttacking) {
             attackHitboxRight.enabled = false;
 			attackHitboxLeft.enabled = false;
+			attackEffectLeft.SetActive(false);
+			attackEffectRight.SetActive(false);
             isAttacking = false;
         }
 	}
