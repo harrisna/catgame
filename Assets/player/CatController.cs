@@ -36,6 +36,8 @@ public class CatController : MonoBehaviour {
 	public Vector3 spawnPosition;
 	public Text countText;
 	public AudioClip jumpSound;
+	public AudioClip attackSound;
+	public AudioClip deathSound;
 	private AudioSource source;
 	private int collisionTimer;
 	private bool enemyCollisons;
@@ -189,7 +191,7 @@ public class CatController : MonoBehaviour {
 				
 				//Jump sound
 				if(!wallJumpSoundPlayed){
-					source.PlayOneShot(jumpSound);
+					source.PlayOneShot(jumpSound,0.025f);
 					wallJumpSoundPlayed = true;
 				}
 			}
@@ -206,6 +208,8 @@ public class CatController : MonoBehaviour {
             hasAttacked = false;
 
 		if (InputController.GetButton(player, InputButton.Attack) && !hasAttacked && !isAttacking) {
+			//Attack Sound
+			source.PlayOneShot(attackSound,0.5f);
 			if (facingRight)
 				attackHitboxRight.enabled = true;
 			else
@@ -264,7 +268,7 @@ public class CatController : MonoBehaviour {
 			{
 				//Sound
 				if(!jumpSoundPlayed){
-				source.PlayOneShot(jumpSound);
+				source.PlayOneShot(jumpSound,0.025f);
 				jumpSoundPlayed = true;
 				}
 				//
@@ -339,7 +343,8 @@ public class CatController : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D col){
 		
 		Debug.Log(col.gameObject.name);
-        if(/*enemyCollisons &&*/(col.gameObject.name == "Pacing Enemy(Clone)" || col.gameObject.name == "Jumping Enemy(Clone)")){
+        if((col.gameObject.name == "Pacing Enemy(Clone)" || col.gameObject.name == "Jumping Enemy(Clone)")){
+			source.PlayOneShot(deathSound);
 			enemyCollisons = false;
 			lives--;
 			if(lives <= 0){
