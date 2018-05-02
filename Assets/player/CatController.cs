@@ -50,7 +50,7 @@ public class CatController : MonoBehaviour {
 	bool wallJumpSoundPlayed = false;
 	bool grounded = false;
 	bool wall = false;
-    float groundRadius = 0.05f;
+    float groundRadius = 0.1f;
 	float groundLen = 1.75f;
 	float wallLen = 1.75f;
 
@@ -85,6 +85,9 @@ public class CatController : MonoBehaviour {
 
 	void FixedUpdate() {
 
+		if (Input.GetKey(KeyCode.R))
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
 		float moveDir = InputController.GetAxis(player);
 
 		if (moveDir != 0.0f)
@@ -97,6 +100,9 @@ public class CatController : MonoBehaviour {
 		else if (Mathf.Abs(moveDir) > 0.0f)
 			wall = Physics2D.OverlapCapsule(wallCheckLeft.position, new Vector2(groundRadius, wallLen), CapsuleDirection2D.Vertical, 0.0f, groundMask.value);
 		else
+			wall = false;
+
+		if (!canWallJump)
 			wall = false;
 
 
@@ -373,4 +379,8 @@ public class CatController : MonoBehaviour {
     public bool IsPlayer1() {
         return canWallJump;
     }
+
+	public void SetSpawnPt(Vector3 pt) {
+		spawnPosition = pt;
+	}
 }

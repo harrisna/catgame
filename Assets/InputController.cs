@@ -7,7 +7,7 @@ public enum InputButton { Left = 0, Right = 1, Up = 2, Down = 3, Jump = 4, Attac
 public class InputController : MonoBehaviour {
 
 	private static readonly KeyCode[,] keymap = { 
-		{ KeyCode.A, KeyCode.D, KeyCode.W, KeyCode.S, KeyCode.Space, KeyCode.LeftControl }, 
+		{ KeyCode.A, KeyCode.D, KeyCode.W, KeyCode.S, KeyCode.Space, KeyCode.F }, 
 		{ KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.RightShift, KeyCode.RightAlt }
 	};
 
