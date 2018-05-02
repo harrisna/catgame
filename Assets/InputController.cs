@@ -8,7 +8,7 @@ public class InputController : MonoBehaviour {
 
 	private static readonly KeyCode[,] keymap = { 
 		{ KeyCode.A, KeyCode.D, KeyCode.W, KeyCode.S, KeyCode.Space, KeyCode.LeftControl }, 
-		{ KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.RightShift, KeyCode.RightControl }
+		{ KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow, KeyCode.DownArrow, KeyCode.RightShift, KeyCode.RightAlt }
 	};
 
 	public static bool GetButton(int player, InputButton b) {

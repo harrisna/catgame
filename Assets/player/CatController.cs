@@ -37,6 +37,7 @@ public class CatController : MonoBehaviour {
 	[SerializeField] private int player = 1;
 	public Vector3 spawnPosition;
 	public Text countText;
+	public LifeCounter lifeCounter;
 	public AudioClip jumpSound;
 	public AudioClip attackSound;
 	public AudioClip deathSound;
@@ -359,7 +360,8 @@ public class CatController : MonoBehaviour {
 				SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 			}else{
            // Destroy(col.gameObject);
-		   countText.text = "Lives: "+ lives.ToString();
+		   //countText.text = "Lives: "+ lives.ToString();
+				lifeCounter.setLives(lives);
 		   //Move the cat to it's spawn position
 			transform.position = spawnPosition;
 			}
