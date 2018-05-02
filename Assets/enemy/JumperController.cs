@@ -39,11 +39,11 @@ public class JumperController : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D col){
         
 		
-		if(col.gameObject.name == "Tilemap"){
+		if(col.gameObject.name == "Tilemap" && rb.velocity.y <= 0){
 			rb.velocity = new Vector2 (0.0f, -rb.velocity.y + 500.0f * Time.fixedDeltaTime);
 			source.PlayOneShot(squishSound);
 			if(yPos < 0f){
-			Debug.Log("In Here");
+			//Debug.Log(rb.velocity.y);
 			}
 		}
 		
@@ -96,19 +96,6 @@ public class JumperController : MonoBehaviour {
 			}else{
 				sp.flipX = true;
 			}
-		//	if( yPos <0f){
-			//Debug.Log("This is y " + transform.position.y + "This is ypos " + yPos);
-	//}
-        //if(transform.position.y > yPos){
-		//	grounded = false;
-		//}else{
-		//	grounded = true;
-		//}
-			 
-             //transform.Translate(speed*Time.deltaTime,0,0);
-			 if(rb.velocity.y == 0f){
-			 rb.velocity = new Vector2 (0.0f, -rb.velocity.y + 500.0f * Time.fixedDeltaTime);
-			 }
-			 
+		
 	}
 }
