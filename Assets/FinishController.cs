@@ -5,10 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class FinishController : MonoBehaviour {
 
-	//public Scene nextScene = null;
+	[SerializeField] int nextScene = -1;
 
-    [SerializeField] bool player1 = false;
-    [SerializeField] bool player2 = false;
+    bool player1 = false;
+    bool player2 = false;
 
 	// Use this for initialization
 	void Start () {
@@ -19,10 +19,10 @@ public class FinishController : MonoBehaviour {
 	void Update () {
 		if (player1 && player2) {
             // go to next scene
-			/*if (nextScene != null)
-				SceneManager.LoadScene(nextScene.name);
-			else */
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);	// just reset the level for now FIXME: make other scenes load
+			if (nextScene != -1)
+				SceneManager.LoadScene(nextScene);
+			else
+				SceneManager.LoadScene(SceneManager.GetActiveScene().name);	// just reset the level for now FIXME: make other scenes load
 			
         }
 	}

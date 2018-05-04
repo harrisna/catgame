@@ -5,21 +5,22 @@ using UnityEngine;
 public class CheckpointController : MonoBehaviour {
 
 	[SerializeField] private Transform respawnPt;
+	[SerializeField] private Sprite FlagUp;
+
+	private bool used = false;
+	private SpriteRenderer sp;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+		sp = GetComponent<SpriteRenderer>();
 	}
 
-	void OnCollisionEnter2D(Collision2D col){
-		CatController c = col.gameObject.GetComponent<CatController> ();
-		if (c != null) {
+	void OnTriggerEnter2D(Collider2D other){
+		CatController c = other.GetComponent<CatController> ();
+		if (c != null && !used) {
 			c.SetSpawnPt(respawnPt.position);
+			sp.sprite = FlagUp;
+			used = true;
 		}
 	}
 }
