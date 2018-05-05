@@ -28,6 +28,7 @@ public class CatController : MonoBehaviour {
 
     [SerializeField] private Collider2D attackHitboxRight;
 	[SerializeField] private Collider2D attackHitboxLeft;
+
 	[SerializeField] private GameObject attackEffectLeft;
 	[SerializeField] private GameObject attackEffectRight;
 
@@ -235,7 +236,9 @@ public class CatController : MonoBehaviour {
             attackHitboxRight.enabled = false;
 			attackHitboxLeft.enabled = false;
 			attackEffectLeft.SetActive(false);
+			attackEffectLeft.GetComponent<Animator>().Play("Slash");
 			attackEffectRight.SetActive(false);
+			attackEffectRight.GetComponent<Animator>().Play("Slash");
             isAttacking = false;
         }
 	}
