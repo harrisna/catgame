@@ -68,6 +68,8 @@ public class CatController : MonoBehaviour {
 	bool clingingRight = false;
 	bool hasClung = false;
 
+	Animator an;
+
 
 
 	[SerializeField] State st = State.Falling;
@@ -76,6 +78,7 @@ public class CatController : MonoBehaviour {
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
 		sp = GetComponent<SpriteRenderer>();
+		an = GetComponent<Animator>();
 		source = GetComponent<AudioSource>();
 		spawnPosition = new Vector3(transform.position.x,transform.position.y,transform.position.z);
 		lives =9;
@@ -106,6 +109,12 @@ public class CatController : MonoBehaviour {
 		if (!canWallJump)
 			wall = false;
 
+		if (an != null) {
+			if (moveDir != 0.0f && st == State.Grounded)
+				an.SetBool ("Walking", true);
+			else
+				an.SetBool ("Walking", false);
+		}
 
 		switch (st) {
 		case State.Grounded:
