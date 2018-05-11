@@ -14,12 +14,12 @@ public class InputController : MonoBehaviour {
 
     //private static readonly int[,] buttonmap = { { }, { } };
 
-    private static bool[,] buttonState = {{ false, false, false, false, false, false }, { false, false, false, false, false, false } };
+    [SerializeField] private static bool[,] buttonState = {{ false, false, false, false, false, false }, { false, false, false, false, false, false } };
 
     private SerialPort serial;
 
     void Start() {
-        serial = new SerialPort("/dev/tty.usbmodem1411", 9600);
+        serial = new SerialPort("/dev/tty.usbmodem1421", 9600);
         serial.Open();
     }
 
